@@ -99,20 +99,22 @@ async function validate(req,res){
                         fields.push(i);
                         fieldsValue.push(dataField[`${i}`][`${k}`])
                       }
+                    }else{
+                      res.statusCode = 400;
+                      message ='field is needed in the data.';
+                      status='error'
+                      data = null;
+                      return res.json({message,status,data})
                     }
-                    res.statusCode = 400;
-                    message ='field is needed in the data.';
-                    status='error'
-                    data = null;
-                    return res.json({message,status,data})
                   }
                   
+                }else{
+                  res.statusCode = 400;
+                  message ='field is needed in the data.';
+                  status='error'
+                  data = null;
+                  return res.json({message,status,data})
                 }
-                res.statusCode = 400;
-                message ='field is needed in the data.';
-                status='error'
-                data = null;
-                return res.json({message,status,data})
               }
               
             }
