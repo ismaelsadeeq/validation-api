@@ -2,7 +2,7 @@
 function getData(req,res){
   let data = {}
   data.name='Abubakar Sadiq Ismail'
-  data.github=''
+  data.github='@ismaelsadeeq'
   data.email='ask4ismailsadiq@gmail.com'
   data.mobile='08131354171'
   data.twitter='@sadeeq_ismaela'
