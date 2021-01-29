@@ -37,36 +37,65 @@ async function validate(req,res){
         if(rule.field){
           if(typeof(rule.field)=='string'){
             if(rule.condition && rule.condition_value){
-              let field;
-              let ruleField = rule.field
-              let x;
-              for( x in dataField){
-                if(dataField[`${ruleField}`]){
-                  field = dataField[`${ruleField}`];
+              if (rule.field.indexOf('.') >=0) {
+                let index = rule.field.indexOf('.') + 1
+                let lastIndex = rule.field.length
+                let dataKey = rule.field.slice(index,lastIndex);
+                let dataValue = rule.field.slice(0,(index-1));
+                if(dataField[`${dataValue}`]){
+                  if(dataField[`${dataValue}`][`${dataKey}`]){
+                    return singleSwitch(res,rule.field,rule.condition,dataField[`${dataValue}`][`${dataKey}`],rule.condition_value)
+                  }
+                  res.statusCode = 400;
+                  message =`field ${rule.field} is missing from data`;
+                  status='error'
+                  data = null;
+                  return res.json({message,status,data})
                 }
+                res.statusCode = 400;
+                message =`field ${rule.field} is missing from data`;
+                status='error'
+                data = null;
+                return res.json({message,status,data})
+                
+              }else{
+                let field;
+                let ruleField = rule.field
+                let x;
+                for( x in dataField){
+                  if(dataField[`${ruleField}`]){
+                    field = dataField[`${ruleField}`];
+                  }
+                }
+                if(field){
+                  return singleSwitch(res,ruleField,rule.condition,field,rule.condition_value)
+                }else{
+                  for(let i=0; i<dataField.length;i++){
+                    if(dataField[i] == rule.field){
+                      return singleSwitch(res,rule.field,rule.condition,dataField[i],rule.condition_value)
+                    }
+                  }
+                }
+                res.statusCode = 400;
+                message =`field ${rule.field} is missing from data`;
+                status='error'
+                data = null;
+                return res.json({message,status,data})
               }
-              if(field){
-                return singleSwitch(res,ruleField,rule.condition,field,rule.condition_value)
+              if(!rule.condition){
+                res.statusCode = 400;
+                message =`${rule.condition} is required.`;
+                status='error'
+                data = null;
+                return res.json({message,status,data})
               }
-              res.statusCode = 400;
-              message ='field is needed in the data.';
-              status='error'
-              data = null;
-              return res.json({message,status,data})
-            }
-            if(!rule.condition){
-              res.statusCode = 400;
-              message =`${rule.condition} is required.`;
-              status='error'
-              data = null;
-              return res.json({message,status,data})
-            }
-            if(!rule.condition_value){
-              res.statusCode = 400;
-              message =`${rule.condition_value} is required.`;
-              status='error'
-              data = null;
-              return res.json({message,status,data})
+              if(!rule.condition_value){
+                res.statusCode = 400;
+                message =`${rule.condition_value} is required.`;
+                status='error'
+                data = null;
+                return res.json({message,status,data})
+              }
             }
           }else {
             let i;
@@ -101,7 +130,7 @@ async function validate(req,res){
                       }
                     }else{
                       res.statusCode = 400;
-                      message ='field is needed in the data.';
+                      message =`field ${i}.${k} is mission from data.`;
                       status='error'
                       data = null;
                       return res.json({message,status,data})
@@ -110,7 +139,7 @@ async function validate(req,res){
                   
                 }else{
                   res.statusCode = 400;
-                  message ='field is needed in the data.';
+                  message =`field ${i} is mission from data.`;
                   status='error'
                   data = null;
                   return res.json({message,status,data})
@@ -210,7 +239,7 @@ const singleSwitch =(res,ruleField,condition,field,value)=>{
         return res.json({message,status,data})
       }
       res.statusCode = 200;
-      message =`field ${ruleField} failed validated.`;
+      message =`field ${ruleField} failed validation.`;
       status = 'error';
       data = {
         "validation":{
@@ -239,7 +268,7 @@ const singleSwitch =(res,ruleField,condition,field,value)=>{
         return res.json({message,status,data})
       }
       res.statusCode = 200;
-      message =`field ${ruleField} failed validated.`;
+      message =`field ${ruleField} failed validation.`;
       status = 'error';
       data = {
         "validation":{
@@ -268,7 +297,7 @@ const singleSwitch =(res,ruleField,condition,field,value)=>{
         return res.json({message,status,data})
       }
       res.statusCode = 200;
-      message =`field ${ruleField} failed validated.`;
+      message =`field ${ruleField} failed validation.`;
       status = 'error';
       data = {
         "validation":{
@@ -297,7 +326,7 @@ const singleSwitch =(res,ruleField,condition,field,value)=>{
         return res.json({message,status,data})
       }
       res.statusCode = 200;
-      message =`field ${ruleField} failed validated.`;
+      message =`field ${ruleField} failed validation.`;
       status = 'error';
       data = {
         "validation":{
@@ -326,7 +355,7 @@ const singleSwitch =(res,ruleField,condition,field,value)=>{
         return res.json({message,status,data})
       }
       res.statusCode = 200;
-      message =`field ${ruleField} failed validated.`;
+      message =`field ${ruleField} failed validation.`;
       status = 'error';
       data = {
         "validation":{
