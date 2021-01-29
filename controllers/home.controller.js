@@ -1,17 +1,14 @@
-const models = require('../models');
 
-
-async function getData(req,res){
-  const user = await models.user.findOne(
-    {
-			where:{email:'ask4ismailsadiq@gmail.com'},
-			attributes:['name','email','mobile','twitter']
-    }
-  );
+function getData(req,res){
+  let data = {}
+  data.name='Abubakar Sadiq Ismail'
+  data.github=''
+  data.email='ask4ismailsadiq@gmail.com'
+  data.mobile='08131354171'
+  data.twitter='@sadeeq_ismaela'
   res.statusCode = 200;
 	let message = 'My Rule-Validation API';
 	let status = 'success';
-	let data = user
 	res.json({message,status,data});
 }
 
