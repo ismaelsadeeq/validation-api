@@ -12,7 +12,7 @@ function getData(req,res){
 	res.json({message,status,data});
 }
 
-async function validate(req,res){
+function validate(req,res){
   let message, status, data;
   const response = req.body;
   const rule = response.rule; const dataField = response.data;
